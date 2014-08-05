@@ -19,7 +19,7 @@ function httpGet(theUrl)
 </script>
 <style type="text/css">
 .buttonDirectional {
-	background-color:#b8e356;
+	background-color:#2c2c2c;
 	-webkit-border-top-left-radius:42px;
 	-moz-border-radius-topleft:42px;
 	border-top-left-radius:42px;
@@ -40,16 +40,15 @@ function httpGet(theUrl)
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	height:95px;
-	line-height:95px;
+	height:10%;
+	line-height:10%;
 	width:100px;
 	text-decoration:none;
 	text-align:center;
-	text-shadow:1px 1px 0px #86ae47;
 	outline:none;
 }
 .buttonDirectional:hover {
-	background-color:#a5cc52;
+	background-color:#505050;
 }</style>
 <script>
 function httpGet(theUrl)
@@ -63,7 +62,7 @@ function httpGet(theUrl)
 }
 </script>
 </head>
-<body style="background: #ABEfCA;">
+<body style="background: #803030;">
 <button class="buttonDirectional" type="button" style="left:20%;top:20%;" onmousedown="interUP=setInterval(function() {httpGet('buttonUP');}, 20);" onmouseup="clearInterval(interUP);" onmouseout="clearInterval(interUP);" ontouchstart="interUP=setInterval(function() {httpGet('buttonUP');}, 10);" ontouchend="clearInterval(interUP);" ontouchcancel="clearInterval(interUP)" >UP</button>
 <button class="buttonDirectional" type="button" style="left:20%;top:60%;" onmousedown="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 20);" onmouseup="clearInterval(interDOWN);" onmouseout="clearInterval(interDOWN);" ontouchstart="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 10);" ontouchend="clearInterval(interDOWN);" ontouchcancel="clearInterval(interDOWN)" >DOWN</button>
 <button class="buttonDirectional" type="button" style="left:10%;top:40%;" onmousedown="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 20);" onmouseup="clearInterval(interLEFT);" onmouseout="clearInterval(interLEFT);" ontouchstart="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 10);" ontouchend="clearInterval(interLEFT);" ontouchcancel="clearInterval(interLEFT)" >LEFT</button>
