@@ -44,6 +44,7 @@ function httpGet(theUrl)
 	text-decoration:none;
 	text-align:center;
 	text-shadow:1px 1px 0px #86ae47;
+	outline:none;
 }
 .buttonDirectional:hover {
 	background-color:#a5cc52;
@@ -60,14 +61,16 @@ function httpGet(theUrl)
 }
 </script>
 </head>
-<body>
-<button class="buttonDirectional" type="button" style="left:30%;top:20%;" onclick="httpGet('buttonUP')">UP</button>
-<button  class="buttonDirectional" type="button" style="left:30%;top:60%;" onclick="httpGet('buttonDOWN')">DOWN</button>
-<button  class="buttonDirectional" type="button" style="left:20%;top:40%;" onclick="httpGet('buttonLEFT')">LEFT</button>
-<button  class="buttonDirectional" type="button" style="left:40%;top:40%;" onclick="httpGet('buttonRIGHT')">RIGHT</button>
+<body style="background: #ABEfCA;">
+<button class="buttonDirectional" type="button" style="left:20%;top:20%;" onmousedown="interUP=setInterval(function() {httpGet('buttonUP');}, 10);" onmouseup="clearInterval(interUP);" onmouseout="clearInterval(interUP);" ontouchstart="interUP=setInterval(function() {httpGet('buttonUP');}, 10);" ontouchend="clearInterval(interUP);" ontouchcancel="clearInterval(interUP)" >UP</button>
+<button class="buttonDirectional" type="button" style="left:20%;top:60%;" onmousedown="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 10);" onmouseup="clearInterval(interDOWN);" onmouseout="clearInterval(interDOWN);" ontouchstart="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 10);" ontouchend="clearInterval(interDOWN);" ontouchcancel="clearInterval(interDOWN)" >DOWN</button>
+<button class="buttonDirectional" type="button" style="left:10%;top:40%;" onmousedown="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 10);" onmouseup="clearInterval(interLEFT);" onmouseout="clearInterval(interLEFT);" ontouchstart="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 10);" ontouchend="clearInterval(interLEFT);" ontouchcancel="clearInterval(interLEFT)" >LEFT</button>
+<button class="buttonDirectional" type="button" style="left:30%;top:40%;" onmousedown="interRIGHT=setInterval(function() {httpGet('buttonRIGHT');}, 10);" onmouseup="clearInterval(interRIGHT);" onmouseout="clearInterval(interRIGHT);" ontouchstart="interRIGHT=setInterval(function() {httpGet('buttonRIGHT');}, 10);" ontouchend="clearInterval(interRIGHT);" ontouchcancel="clearInterval(interRIGHT)" >RIGHT</button>
+
+
 <button  class="buttonDirectional" type="button" style="left:60%;top:40%;" onclick="httpGet('buttonA')">A</button>
-<button  class="buttonDirectional" type="button" style="left:70%;top:40%;" onclick="httpGet('buttonB')">B</button>
-<button  class="buttonDirectional" type="button" style="left:50%;top:10%;" onclick="httpGet('buttonSTART')">START</button>
+<button  class="buttonDirectional" type="button" style="left:80%;top:40%;" onclick="httpGet('buttonB')">B</button>
+<button  class="buttonDirectional" type="button" style="left:45%;top:10%;" onclick="httpGet('buttonSTART')">START</button>
 </body>
 </html>
 `
