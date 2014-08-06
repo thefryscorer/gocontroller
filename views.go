@@ -40,8 +40,8 @@ function httpGet(theUrl)
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	height:10%;
-	line-height:10%;
+	height:15%;
+	line-height:15%;
 	width:100px;
 	text-decoration:none;
 	text-align:center;
@@ -58,15 +58,14 @@ function httpGet(theUrl)
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
-    return xmlHttp.responseText;
 }
 </script>
 </head>
 <body style="background: #803030;">
-<button class="buttonDirectional" type="button" style="left:20%;top:20%;" onmousedown="interUP=setInterval(function() {httpGet('buttonUP');}, 20);" onmouseup="clearInterval(interUP);" onmouseout="clearInterval(interUP);" ontouchstart="interUP=setInterval(function() {httpGet('buttonUP');}, 10);" ontouchend="clearInterval(interUP);" ontouchcancel="clearInterval(interUP)" >UP</button>
-<button class="buttonDirectional" type="button" style="left:20%;top:60%;" onmousedown="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 20);" onmouseup="clearInterval(interDOWN);" onmouseout="clearInterval(interDOWN);" ontouchstart="interDOWN=setInterval(function() {httpGet('buttonDOWN');}, 10);" ontouchend="clearInterval(interDOWN);" ontouchcancel="clearInterval(interDOWN)" >DOWN</button>
-<button class="buttonDirectional" type="button" style="left:10%;top:40%;" onmousedown="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 20);" onmouseup="clearInterval(interLEFT);" onmouseout="clearInterval(interLEFT);" ontouchstart="interLEFT=setInterval(function() {httpGet('buttonLEFT');}, 10);" ontouchend="clearInterval(interLEFT);" ontouchcancel="clearInterval(interLEFT)" >LEFT</button>
-<button class="buttonDirectional" type="button" style="left:30%;top:40%;" onmousedown="interRIGHT=setInterval(function() {httpGet('buttonRIGHT');}, 20);" onmouseup="clearInterval(interRIGHT);" onmouseout="clearInterval(interRIGHT);" ontouchstart="interRIGHT=setInterval(function() {httpGet('buttonRIGHT');}, 10);" ontouchend="clearInterval(interRIGHT);" ontouchcancel="clearInterval(interRIGHT)" >RIGHT</button>
+<button class="buttonDirectional" type="button" style="left:20%;top:20%;" onclick="httpGet('buttonUP')" >UP</button>
+<button class="buttonDirectional" type="button" style="left:20%;top:60%;" onclick="httpGet('buttonDOWN')" >DOWN</button>
+<button class="buttonDirectional" type="button" style="left:10%;top:40%;" onclick="httpGet('buttonLEFT')" >LEFT</button>
+<button class="buttonDirectional" type="button" style="left:30%;top:40%;" onclick="httpGet('buttonRIGHT')" >RIGHT</button>
 
 
 <button  class="buttonDirectional" type="button" style="left:60%;top:40%;" onclick="httpGet('buttonA')">A</button>
