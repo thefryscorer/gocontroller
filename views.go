@@ -60,17 +60,25 @@ function httpGet(theUrl)
     xmlHttp.send( null );
 }
 </script>
+
 </head>
 <body style="background: #803030;">
-<button class="buttonDirectional" type="button" style="left:20%;top:20%;" onclick="httpGet('buttonUP')" onmousedown="httpGet('buttonUPtypePRESS')" onmouseup="httpGet('buttonUPtypeRELEASE')" >UP</button>
-<button class="buttonDirectional" type="button" style="left:20%;top:60%;" onclick="httpGet('buttonDOWN')" onmousedown="httpGet('buttonDOWNtypePRESS')" onmouseup="httpGet('buttonDOWNtypeRELEASE')" >DOWN</button>
-<button class="buttonDirectional" type="button" style="left:10%;top:40%;" onclick="httpGet('buttonLEFT')" onmousedown="httpGet('buttonLEFTtypePRESS')" onmouseup="httpGet('buttonLEFTtypeRELEASE')" >LEFT</button>
-<button class="buttonDirectional" type="button" style="left:30%;top:40%;" onclick="httpGet('buttonRIGHT')" onmousedown="httpGet('buttonRIGHTtypePRESS')" onmouseup="httpGet('buttonRIGHTtypeRELEASE')" >RIGHT</button>
+<button class="buttonDirectional" type="button" style="left:20%;top:20%;" onclick="httpGet('buttonUP')">UP</button>
+<button class="buttonDirectional" type="button" style="left:20%;top:60%;" onclick="httpGet('buttonDOWN')">DOWN</button>
+<button class="buttonDirectional" type="button" style="left:10%;top:40%;" onclick="httpGet('buttonLEFT')" >LEFT</button>
+<button class="buttonDirectional" type="button" style="left:30%;top:40%;" onclick="httpGet('buttonRIGHT')" >RIGHT</button>
 
 
 <button  class="buttonDirectional" type="button" style="left:60%;top:40%;" onclick="httpGet('buttonA')">A</button>
 <button  class="buttonDirectional" type="button" style="left:80%;top:40%;" onclick="httpGet('buttonB')">B</button>
 <button  class="buttonDirectional" type="button" style="left:45%;top:10%;" onclick="httpGet('buttonSTART')">START</button>
+
+<script>
+	$(document).dblclick(function (e) {
+	    e.preventDefault();
+	});
+</script>
+
 </body>
 </html>
 `

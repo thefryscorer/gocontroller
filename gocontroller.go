@@ -63,7 +63,7 @@ func (s *server) handleRequest(w http.ResponseWriter, req *http.Request) {
 	if req.RequestURI == "/" {
 		io.WriteString(w, s.Page)
 	} else {
-		s.handleInput(req)
+		go s.handleInput(req)
 	}
 
 }
