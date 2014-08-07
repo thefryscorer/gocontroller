@@ -42,8 +42,8 @@ Gocontroller is a library for using a web browser as a controller for games and 
     				fmt.Println("Off was pressed")
     			}
     		}
-    	        //Clear inputs
-    	        inAgg.Clear()
+    		//Clear inputs
+    		inAgg.Clear()
     	}       
     }
 
