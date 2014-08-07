@@ -1,40 +1,38 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
-	"os"
+	"io"
+
 	"os/exec"
 	"runtime"
-	"runtime/pprof"
 
 	"github.com/thefryscorer/gocontroller"
 )
 
+var cmdPipe io.WriteCloser
+
 func keypress(key string) {
-	fmt.Println(key)
-	go func() {
-		cmd := exec.Command("xdotool", "key", key)
-		err := cmd.Run()
-		if err != nil {
-			fmt.Printf("Warning: %v\n", err)
-		}
-	}()
+	// We need to sleep a little here because some applications (anything that uses
+	// SDL for example) ignore any keypresses with a duration too low.
+	cmdPipe.Write([]byte(fmt.Sprintf("keydown %v\n", key)))
+	cmdPipe.Write([]byte("usleep 50000\n"))
+	cmdPipe.Write([]byte(fmt.Sprintf("keyup %v\n", key)))
 }
 
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
-
 func main() {
-	flag.Parse()
-	if *cpuprofile != "" {
-		f, err := os.Create(*cpuprofile)
-		if err != nil {
-			log.Fatal(err)
-		}
-		pprof.StartCPUProfile(f)
-		defer pprof.StopCPUProfile()
+	xte := exec.Command("xte")
+	var err error
+	cmdPipe, err = xte.StdinPipe()
+	if err != nil {
+		panic(err)
 	}
+	defer cmdPipe.Close()
+
+	if err := xte.Start(); err != nil {
+		panic(err)
+	}
+
 	runtime.GOMAXPROCS(8)
 	server := gocontroller.NewServer(gocontroller.DEFAULTPAGE, gocontroller.DEFAULTPORT)
 	server.Start()
@@ -51,8 +49,7 @@ func main() {
 				keypress("Down")
 
 			case gocontroller.LEFT:
-				pprof.StopCPUProfile()
-				os.Exit(0)
+				keypress("Left")
 
 			case gocontroller.RIGHT:
 				keypress("Right")
