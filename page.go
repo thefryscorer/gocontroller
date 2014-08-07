@@ -55,9 +55,9 @@ body {
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	height:10%;
-	line-height:10%;
-	width:10%;
+	height:20%;
+	line-height:20%;
+	width:20%;
 	text-decoration:none;
 	text-align:center;
 	outline:none;
