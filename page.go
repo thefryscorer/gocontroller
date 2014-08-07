@@ -35,7 +35,13 @@ const layoutFoot string = `
 
 const DefaultCSS string = `
 body {
-	background: #803030;
+	background:
+		radial-gradient(black 15%, transparent 16%) 0 0,
+		radial-gradient(black 15%, transparent 16%) 8px 8px,
+		radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+		radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+		background-color:#282828;
+		background-size:8px 8px;
 }
 .button {
 	background-color:#2c2c2c;
@@ -48,20 +54,17 @@ body {
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	height:15%;
-	line-height:15%;
-	width:100px;
+	height:10%;
+	line-height:10%;
+	width:10%;
 	text-decoration:none;
 	text-align:center;
 	outline:none;
 }
-.button:hover {
-	background-color:#505050;
-}
 `
 
 const buttonTemplate string = `
-<button class="button" type="button" style="left:%v%%;top:%v%%;" onclick="httpGet('button%v')">%v</button>
+<button class="button" type="button" style="left:%v%%;top:%v%%;%v" onclick="httpGet('button%v')">%v</button>
 `
 
 type Layout struct {
@@ -84,7 +87,7 @@ var DefaultLayout Layout = Layout{Style: DefaultCSS, Buttons: []Button{
 	{Left: 20, Top: 60, Key: "Down"},
 	{Left: 10, Top: 40, Key: "Left"},
 	{Left: 30, Top: 40, Key: "Right"},
-	{Left: 60, Top: 40, Key: "A"},
-	{Left: 80, Top: 40, Key: "B"},
+	{Left: 60, Top: 40, Key: "A", Color: "#75B34D"},
+	{Left: 80, Top: 40, Key: "B", Color: "#7895D1"},
 	{Left: 45, Top: 10, Key: "Start"},
 }}

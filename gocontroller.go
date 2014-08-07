@@ -12,13 +12,20 @@ type Button struct {
 	Left, Top int
 	Key       string
 	Label     string
+	Color     string
 }
 
 func (b Button) String() string {
-	if b.Label != "" {
-		return fmt.Sprintf(buttonTemplate, b.Left, b.Top, b.Key, b.Label)
+	var col string
+	if b.Color == "" {
+		col = ""
+	} else {
+		col = fmt.Sprintf("background:%v;", b.Color)
 	}
-	return fmt.Sprintf(buttonTemplate, b.Left, b.Top, b.Key, b.Key)
+	if b.Label != "" {
+		return fmt.Sprintf(buttonTemplate, b.Left, b.Top, col, b.Key, b.Label)
+	}
+	return fmt.Sprintf(buttonTemplate, b.Left, b.Top, col, b.Key, b.Key)
 }
 
 type event int
