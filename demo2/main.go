@@ -34,34 +34,23 @@ func main() {
 	}
 
 	runtime.GOMAXPROCS(8)
-	server := gocontroller.NewServer(gocontroller.DEFAULTPAGE, gocontroller.DEFAULTPORT)
+	layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
+		{Left: 20, Top: 20, Key: "Up"},
+		{Left: 20, Top: 60, Key: "Down"},
+		{Left: 10, Top: 40, Key: "Left"},
+		{Left: 30, Top: 40, Key: "Right"},
+		{Left: 60, Top: 40, Key: "a"},
+		{Left: 80, Top: 40, Key: "b"},
+		{Left: 45, Top: 10, Key: "Return"},
+	}}
+	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
 	server.Start()
 	fmt.Println("Server started.")
 	inAgg := server.NewInputAggregator()
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			switch in.Button {
-			case gocontroller.UP:
-				keypress("Up")
-
-			case gocontroller.DOWN:
-				keypress("Down")
-
-			case gocontroller.LEFT:
-				keypress("Left")
-
-			case gocontroller.RIGHT:
-				keypress("Right")
-
-			case gocontroller.START:
-				keypress("Return")
-			case gocontroller.A:
-				keypress("a")
-
-			case gocontroller.B:
-				keypress("b")
-			}
+			keypress(in.Button.Key)
 		}
 
 		//Clear inputs

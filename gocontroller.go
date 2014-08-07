@@ -1,25 +1,25 @@
 package gocontroller
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strings"
 )
 
-type Button int
+type Button struct {
+	Left, Top int
+	Key       string
+	Label     string
+}
 
-const (
-	NONE Button = iota
-	UP
-	DOWN
-	LEFT
-	RIGHT
-	B
-	A
-	START
-	SELECT
-)
+func (b Button) String() string {
+	if b.Label != "" {
+		return fmt.Sprintf(buttonTemplate, b.Left, b.Top, b.Key, b.Label)
+	}
+	return fmt.Sprintf(buttonTemplate, b.Left, b.Top, b.Key, b.Key)
+}
 
 type inputType int
 
@@ -39,29 +39,17 @@ type input struct {
 	InputType inputType
 }
 
-var inputMap = map[string]Button{
-	"UP":     UP,
-	"DOWN":   DOWN,
-	"LEFT":   LEFT,
-	"RIGHT":  RIGHT,
-	"START":  START,
-	"SELECT": SELECT,
-	"A":      A,
-	"B":      B,
-}
-
 type server struct {
 	ch   chan input
-	Page string // For now
+	Page Layout
 	Port string
 }
 
-const DEFAULTPAGE = gamepadPage
-const DEFAULTPORT = ":12345"
+const DefaultPort = ":12345"
 
 func (s *server) handleRequest(w http.ResponseWriter, req *http.Request) {
 	if req.RequestURI == "/" {
-		io.WriteString(w, s.Page)
+		io.WriteString(w, s.Page.String())
 	} else {
 		go s.handleInput(req)
 	}
@@ -75,8 +63,22 @@ func (s *server) handleInput(req *http.Request) {
 
 		inputStrings := strings.Split(inputString, "type")
 
-		buttonString := inputStrings[0]
-		button := inputMap[buttonString]
+		// Check the key is allowed.
+		key := inputStrings[0]
+		found := false
+		var foundBtn Button
+		for _, btn := range s.Page.Buttons {
+			if btn.Key == key {
+				found = true
+				foundBtn = btn
+				break
+			}
+		}
+
+		if found == false {
+			log.Printf("Ignoring illegal key: %v", key)
+			return
+		}
 
 		// If type not specified, default to release
 		var inType inputType = RELEASE
@@ -87,7 +89,7 @@ func (s *server) handleInput(req *http.Request) {
 
 		event := input{
 			UserIP:    ipString,
-			Button:    button,
+			Button:    foundBtn,
 			InputType: inType,
 		}
 
@@ -95,10 +97,10 @@ func (s *server) handleInput(req *http.Request) {
 	}
 }
 
-func NewServer(page string, port string) *server {
+func NewServer(layout Layout, port string) *server {
 	return &server{
 		Port: port,
-		Page: page,
+		Page: layout,
 	}
 }
 
@@ -120,7 +122,7 @@ func (s *server) PollInput() input {
 	default:
 		return input{
 			UserIP: "",
-			Button: NONE,
+			Button: Button{},
 		}
 	}
 }
@@ -138,7 +140,7 @@ func (s *server) NewInputAggregator() InputAggregator {
 }
 
 func (a *InputAggregator) Collect() {
-	for i := a.Server.PollInput(); i.Button != NONE; i = a.Server.PollInput() {
+	for i := a.Server.PollInput(); i.Button.Key != ""; i = a.Server.PollInput() {
 		a.Inputs = append(a.Inputs, i)
 	}
 }

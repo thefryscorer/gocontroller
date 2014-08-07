@@ -60,7 +60,14 @@ func waitForPlayer(inAgg gocontroller.InputAggregator) *Player {
 
 func main() {
 	runtime.GOMAXPROCS(4)
-	server := gocontroller.NewServer(gocontroller.DEFAULTPAGE, gocontroller.DEFAULTPORT)
+	layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
+		{Left: 20, Top: 20, Key: "Up"},
+		{Left: 20, Top: 60, Key: "Down"},
+		{Left: 10, Top: 40, Key: "Left"},
+		{Left: 30, Top: 40, Key: "Right"},
+		{Left: 45, Top: 10, Key: "Start"},
+	}}
+	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
 	server.Start()
 	fmt.Println("Server started.")
 	inAgg := server.NewInputAggregator()
@@ -81,36 +88,36 @@ func main() {
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			switch in.Button {
-			case gocontroller.UP:
+			switch in.Button.Key {
+			case "Up":
 				for i := 0; i < len(players); i++ {
 					if in.UserIP == players[i].IP {
 						players[i].ball.y -= speed
 						break
 					}
 				}
-			case gocontroller.DOWN:
+			case "Down":
 				for i := 0; i < len(players); i++ {
 					if in.UserIP == players[i].IP {
 						players[i].ball.y += speed
 						break
 					}
 				}
-			case gocontroller.LEFT:
+			case "Left":
 				for i := 0; i < len(players); i++ {
 					if in.UserIP == players[i].IP {
 						players[i].ball.x -= speed
 						break
 					}
 				}
-			case gocontroller.RIGHT:
+			case "Right":
 				for i := 0; i < len(players); i++ {
 					if in.UserIP == players[i].IP {
 						players[i].ball.x += speed
 						break
 					}
 				}
-			case gocontroller.START:
+			case "Start":
 				for _, p := range players {
 					if p.IP != in.UserIP {
 						players = append(players, newPlayer(in.UserIP))
