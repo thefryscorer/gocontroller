@@ -53,5 +53,11 @@ Gocontroller is a library for using a web browser as a controller for games and 
 
 ## Features
 
+- Multiple players with IP address checking
+- Support for multiple instances on different ports
+- User defined buttons and styles
+
 ## To Do
 
+- Differentiate between button presses and releases (Javascript frightens me)
+- More examples
