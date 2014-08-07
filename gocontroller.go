@@ -29,8 +29,8 @@ const (
 )
 
 var typeMap = map[string]inputType{
-	"PRESSED":  PRESS,
-	"RELEASED": RELEASE,
+	"PRESS":   PRESS,
+	"RELEASE": RELEASE,
 }
 
 type input struct {
@@ -78,7 +78,7 @@ func (s *server) handleInput(req *http.Request) {
 		buttonString := inputStrings[0]
 		button := inputMap[buttonString]
 
-		// If type not specified, default to released
+		// If type not specified, default to release
 		var inType inputType = RELEASE
 		if len(inputStrings) > 1 {
 			typeString := inputStrings[1]
