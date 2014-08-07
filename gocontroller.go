@@ -21,22 +21,23 @@ func (b Button) String() string {
 	return fmt.Sprintf(buttonTemplate, b.Left, b.Top, b.Key, b.Key)
 }
 
-type inputType int
+type event int
 
 const (
-	PRESS inputType = iota
+	NONE event = iota
+	PRESS
 	RELEASE
 )
 
-var typeMap = map[string]inputType{
+var eventMap = map[string]event{
 	"PRESS":   PRESS,
 	"RELEASE": RELEASE,
 }
 
 type input struct {
-	UserIP    string
-	Button    Button
-	InputType inputType
+	UserIP string
+	Key    string
+	Event  event
 }
 
 type server struct {
@@ -81,19 +82,19 @@ func (s *server) handleInput(req *http.Request) {
 		}
 
 		// If type not specified, default to release
-		var inType inputType = RELEASE
+		var ev event = RELEASE
 		if len(inputStrings) > 1 {
-			typeString := inputStrings[1]
-			inType = typeMap[typeString]
+			evString := inputStrings[1]
+			ev = eventMap[evString]
 		}
 
-		event := input{
-			UserIP:    ipString,
-			Button:    foundBtn,
-			InputType: inType,
+		in := input{
+			UserIP: ipString,
+			Key:    foundBtn.Key,
+			Event:  ev,
 		}
 
-		s.ch <- event
+		s.ch <- in
 	}
 }
 
@@ -120,10 +121,7 @@ func (s *server) PollInput() input {
 	case val := <-s.ch:
 		return val
 	default:
-		return input{
-			UserIP: "",
-			Button: Button{},
-		}
+		return input{Event: NONE}
 	}
 }
 
@@ -140,7 +138,7 @@ func (s *server) NewInputAggregator() InputAggregator {
 }
 
 func (a *InputAggregator) Collect() {
-	for i := a.Server.PollInput(); i.Button.Key != ""; i = a.Server.PollInput() {
+	for i := a.Server.PollInput(); i.Event != NONE; i = a.Server.PollInput() {
 		a.Inputs = append(a.Inputs, i)
 	}
 }

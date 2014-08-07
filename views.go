@@ -12,45 +12,34 @@ const layoutHead string = `
 %v
 </style>
 <script>
-function httpGet(theUrl)
-{
+function httpGet(theUrl) {
     var xmlHttp = null;
 
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
 }
+
+$(document).dblclick(function (e) {
+		e.preventDefault();
+});
 </script>
 </head>
-<body style="background: #803030;">
+<body>
 `
 
 const layoutFoot string = `
-<script>
-	$(document).dblclick(function (e) {
-	    e.preventDefault();
-	});
-</script>
-
 </body>
 </html>
 `
 
 const DefaultCSS string = `
+body {
+	background: #803030;
+}
 .button {
 	background-color:#2c2c2c;
-	-webkit-border-top-left-radius:42px;
-	-moz-border-radius-topleft:42px;
-	border-top-left-radius:42px;
-	-webkit-border-top-right-radius:42px;
-	-moz-border-radius-topright:42px;
-	border-top-right-radius:42px;
-	-webkit-border-bottom-right-radius:42px;
-	-moz-border-radius-bottomright:42px;
-	border-bottom-right-radius:42px;
-	-webkit-border-bottom-left-radius:42px;
-	-moz-border-radius-bottomleft:42px;
-	border-bottom-left-radius:42px;
+	border-radius: 42px;
 	text-indent:0;
 	display:block;
 	position:absolute;
