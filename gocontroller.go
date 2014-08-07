@@ -18,75 +18,104 @@ const (
 	B
 	A
 	START
+	SELECT
 )
 
+type inputType int
+
+const (
+	PRESS inputType = iota
+	RELEASE
+)
+
+var typeMap = map[string]inputType{
+	"PRESSED":  PRESS,
+	"RELEASED": RELEASE,
+}
+
 type input struct {
-	UserIP string
-	Button Button
+	UserIP    string
+	Button    Button
+	InputType inputType
 }
 
-var ch chan input
-
-func showIndex(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, gamepadPage)
+var inputMap = map[string]Button{
+	"UP":     UP,
+	"DOWN":   DOWN,
+	"LEFT":   LEFT,
+	"RIGHT":  RIGHT,
+	"START":  START,
+	"SELECT": SELECT,
+	"A":      A,
+	"B":      B,
 }
 
-func StartServer() {
-	ch = make(chan input)
+type server struct {
+	ch   chan input
+	Page string // For now
+	Port string
+}
+
+const DEFAULTPAGE = gamepadPage
+const DEFAULTPORT = ":12345"
+
+func (s *server) handleRequest(w http.ResponseWriter, req *http.Request) {
+	if req.RequestURI == "/" {
+		io.WriteString(w, s.Page)
+	} else {
+		s.handleInput(req)
+	}
+
+}
+
+func (s *server) handleInput(req *http.Request) {
+	if strings.Contains(req.RequestURI, "/button") {
+		inputString := strings.Replace(req.RequestURI, "/button", "", 1)
+		ipString := strings.Split(req.RemoteAddr, ":")[0]
+
+		inputStrings := strings.Split(inputString, "type")
+
+		buttonString := inputStrings[0]
+		button := inputMap[buttonString]
+
+		// If type not specified, default to released
+		var inType inputType = RELEASE
+		if len(inputStrings) > 1 {
+			typeString := inputStrings[1]
+			inType = typeMap[typeString]
+		}
+
+		event := input{
+			UserIP:    ipString,
+			Button:    button,
+			InputType: inType,
+		}
+
+		s.ch <- event
+	}
+}
+
+func NewServer(page string, port string) *server {
+	return &server{
+		Port: port,
+		Page: page,
+	}
+}
+
+func (s *server) Start() {
+	s.ch = make(chan input)
 	go func() {
-		http.HandleFunc("/", showIndex)
-		http.HandleFunc("/buttonUP", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: UP,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonDOWN", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: DOWN,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonLEFT", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: LEFT,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonRIGHT", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: RIGHT,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonB", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: B,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonA", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: A,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		http.HandleFunc("/buttonSTART", func(w http.ResponseWriter, req *http.Request) {
-			ch <- input{
-				Button: START,
-				UserIP: strings.Split(req.RemoteAddr, ":")[0],
-			}
-		})
-		err := http.ListenAndServe(":12345", nil)
+		http.HandleFunc("/", s.handleRequest)
+		err := http.ListenAndServe(s.Port, nil)
 		if err != nil {
 			log.Fatal("ListenAndServe: ", err)
 		}
 	}()
 }
 
-func PollInput() input {
+func (s *server) PollInput() input {
 	select {
-	case val := <-ch:
+	case val := <-s.ch:
 		return val
 	default:
 		return input{
@@ -97,17 +126,19 @@ func PollInput() input {
 }
 
 type InputAggregator struct {
+	Server *server
 	Inputs []input
 }
 
-func NewInputAggregator() InputAggregator {
+func (s *server) NewInputAggregator() InputAggregator {
 	return InputAggregator{
 		Inputs: make([]input, 0),
+		Server: s,
 	}
 }
 
 func (a *InputAggregator) Collect() {
-	for i := PollInput(); i.Button != NONE; i = PollInput() {
+	for i := a.Server.PollInput(); i.Button != NONE; i = a.Server.PollInput() {
 		a.Inputs = append(a.Inputs, i)
 	}
 }

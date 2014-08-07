@@ -60,8 +60,11 @@ func waitForPlayer(inAgg gocontroller.InputAggregator) *Player {
 
 func main() {
 	runtime.GOMAXPROCS(4)
-	gocontroller.StartServer()
+	server := gocontroller.NewServer(gocontroller.DEFAULTPAGE, gocontroller.DEFAULTPORT)
+	server.Start()
 	fmt.Println("Server started.")
+	inAgg := server.NewInputAggregator()
+
 	sdl.Init(sdl.INIT_EVERYTHING)
 	screen = sdl.SetVideoMode(sWidth, sHeight, sBpp, flags)
 	sdl.WM_SetCaption("Controller Demo", "none")
@@ -70,8 +73,6 @@ func main() {
 	ballImg := sdl.DisplayFormatAlpha(sdl.Load("ball.png"))
 
 	var players = make([]*Player, 0)
-
-	inAgg := gocontroller.NewInputAggregator()
 
 	players = append(players, waitForPlayer(inAgg))
 

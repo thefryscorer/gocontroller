@@ -1,6 +1,6 @@
 package gocontroller
 
-var gamepadPage string = `
+const gamepadPage string = `
 <!DOCTYPE html>
 <html>
 <head>
