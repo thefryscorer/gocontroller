@@ -11,7 +11,7 @@ Gocontroller is a library for using a web browser as a controller for games and 
 
     #go get github.com/thefryscorer/gocontroller
 
-## Demos
+## Example
 
 ### Demo1
 Demo1 is an example of using Gocontroller as input in a Go-SDL application, and requires Go-SDL to run.
