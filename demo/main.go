@@ -88,7 +88,7 @@ func main() {
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			switch in.Button.Key {
+			switch in.Key {
 			case "Up":
 				for i := 0; i < len(players); i++ {
 					if in.UserIP == players[i].IP {

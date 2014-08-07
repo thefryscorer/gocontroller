@@ -50,7 +50,7 @@ func main() {
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			keypress(in.Button.Key)
+			keypress(in.Key)
 		}
 
 		//Clear inputs
