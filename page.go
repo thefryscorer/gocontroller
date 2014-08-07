@@ -36,12 +36,13 @@ const layoutFoot string = `
 const DefaultCSS string = `
 body {
 	background:
-		radial-gradient(black 15%, transparent 16%) 0 0,
-		radial-gradient(black 15%, transparent 16%) 8px 8px,
-		radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
-		radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
-		background-color:#282828;
-		background-size:8px 8px;
+	radial-gradient(#151515 5px, transparent 5px) 0px 0px, 
+	radial-gradient(#222 5px, transparent 5px) 0px 23px,
+	radial-gradient(#222 5px, transparent 5px) 25px 0px,
+	radial-gradient(#1b1b1b 10px, transparent 10px),
+	radial-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 5%, #242424);
+	background-size: 30px 30px;
+	background-color: #131313;
 }
 .button {
 	background-color:#2c2c2c;
