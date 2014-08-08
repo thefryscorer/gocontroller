@@ -11,9 +11,23 @@ Gocontroller is a library for using a web browser as a controller for games and 
 
     #go get github.com/thefryscorer/gocontroller
 
+## Features
+
+- Multiple players with IP address checking
+- Support for multiple instances on different ports
+- User defined buttons and styles
+
 ## Examples
 
-### Simple custom gamepad
+This repository includes two examples of different uses of Gocontroller. 
+
+The first uses Gocontroller to trigger system calls to xte on a linux machine to send key inputs to applications on the desktop. Requires a linux system and the xte binary to be installed to run.
+
+The second is a very rudimentary multiplayer SDL application using Gocontroller to move circles around a screen. This example relies on the Go-SDL package and SDL must be installed.
+
+### More examples
+
+#### Simple custom gamepad
 
 	package main
 	
@@ -49,18 +63,3 @@ Gocontroller is a library for using a web browser as a controller for games and 
 		}
 	}	
 
-
-
-
-
-
-## Features
-
-- Multiple players with IP address checking
-- Support for multiple instances on different ports
-- User defined buttons and styles
-
-## To Do
-
-- Differentiate between button presses and releases (Javascript frightens me)
-- More examples
