@@ -115,7 +115,6 @@ func newPlayer(ip string) Player {
 }
 
 func main() {
-	//runtime.GOMAXPROCS(4)
 
 	layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
 		{Left: 20, Top: 20, Key: "Up"},
