@@ -1,23 +1,39 @@
 package main
 
 import (
-	"fmt"
+	"image"
+	"image/color"
+	"math/rand"
 	"os"
-	"runtime"
+	"time"
 
 	"github.com/banthar/Go-SDL/sdl"
 	"github.com/thefryscorer/gocontroller"
 )
 
-var (
-	sWidth  int = 800
-	sHeight int = 500
-	sBpp    int = 32
+const (
+	screenWidth  = 800
+	screenHeight = 500
+	screenBPP    = 32
+	screenFlags  = sdl.SWSURFACE
 
-	screen *sdl.Surface
-	flags  uint32 = sdl.SWSURFACE
+	playerSpeed = 5
+	gameFPS     = 30
 )
 
+var (
+	playerColors = []color.NRGBA{
+		{255, 255, 255, 255},
+		{128, 255, 255, 255},
+		{255, 128, 255, 255},
+		{255, 255, 128, 255},
+	}
+)
+
+// Helper functions.
+
+// sdlBlit draws the first argument on top of the second argument, with the first argument's
+// top-left corner located at (x, y).
 func sdlBlit(surf *sdl.Surface, screen *sdl.Surface, x int, y int) {
 	rect := sdl.Rect{
 		X: int16(x),
@@ -28,32 +44,75 @@ func sdlBlit(surf *sdl.Surface, screen *sdl.Surface, x int, y int) {
 	screen.Blit(&rect, surf, nil)
 }
 
-type Player struct {
-	x  int
-	y  int
-	IP string
+// makeBall returns an SDL surface containing an image of a ball with the given radius and color.
+func makeBall(radius int, col color.Color) *sdl.Surface {
+	img := image.NewNRGBA(image.Rect(0, 0, radius*2, radius*2))
+	for x := -radius; x < radius; x++ {
+		for y := -radius; y < radius; y++ {
+			if x*x+y*y < radius*radius {
+				img.Set(radius+x, radius+y, col)
+			}
+		}
+	}
+	return sdl.CreateSurfaceFromImage(img)
 }
 
-func newPlayer(ip string) *Player {
-	return &Player{
-		x:  0,
-		y:  0,
-		IP: ip,
+// Player Management.
+
+type Player struct {
+	x, y   int
+	dX, dY int
+	ip     string
+	surf   *sdl.Surface
+}
+
+func (p *Player) processInput(in gocontroller.Input) {
+	switch in.Key {
+	case "Up":
+		if in.Event == gocontroller.PRESS {
+			p.dY = -playerSpeed
+		} else if in.Event == gocontroller.RELEASE {
+			p.dY = 0
+		}
+	case "Down":
+		if in.Event == gocontroller.PRESS {
+			p.dY = playerSpeed
+		} else if in.Event == gocontroller.RELEASE {
+			p.dY = 0
+		}
+	case "Left":
+		if in.Event == gocontroller.PRESS {
+			p.dX = -playerSpeed
+		} else if in.Event == gocontroller.RELEASE {
+			p.dX = 0
+		}
+	case "Right":
+		if in.Event == gocontroller.PRESS {
+			p.dX = playerSpeed
+		} else if in.Event == gocontroller.RELEASE {
+			p.dX = 0
+		}
 	}
 }
 
-func waitForPlayer(inAgg gocontroller.InputAggregator) *Player {
-	for {
-		inAgg.Collect()
-		for _, in := range inAgg.Inputs {
-			return newPlayer(in.UserIP)
-		}
-		inAgg.Clear()
+func (p *Player) update() {
+	p.x += p.dX
+	p.y += p.dY
+}
+
+func newPlayer(ip string) Player {
+	col := playerColors[rand.Intn(len(playerColors))]
+	return Player{
+		x:    screenWidth/2 - 8,
+		y:    screenHeight/2 - 8,
+		ip:   ip,
+		surf: makeBall(16, col),
 	}
 }
 
 func main() {
-	runtime.GOMAXPROCS(4)
+	//runtime.GOMAXPROCS(4)
+
 	layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
 		{Left: 20, Top: 20, Key: "Up"},
 		{Left: 20, Top: 60, Key: "Down"},
@@ -63,78 +122,64 @@ func main() {
 	}}
 	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
 	server.Start()
-	fmt.Println("Server started.")
-	inAgg := server.NewInputAggregator()
 
-	sdl.Init(sdl.INIT_EVERYTHING)
-	screen = sdl.SetVideoMode(sWidth, sHeight, sBpp, flags)
+	sdl.Init(sdl.INIT_VIDEO)
+	screenSurf := sdl.SetVideoMode(screenWidth, screenHeight, screenBPP, screenFlags)
 	sdl.WM_SetCaption("Controller Demo", "none")
 	defer sdl.Quit()
 
-	ballImg := sdl.DisplayFormatAlpha(sdl.Load("ball.png"))
+	players := make([]Player, 0)
+	inAgg := server.NewInputAggregator()
 
-	var players = make([]*Player, 0)
-
-	players = append(players, waitForPlayer(inAgg))
-
-	var speed int = 3
+	frameTime := 1.0 / gameFPS * float64(time.Second)
+	ticker := time.NewTicker(time.Duration(frameTime))
 
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			switch in.Key {
-			case "Up":
-				for i := 0; i < len(players); i++ {
-					if in.UserIP == players[i].IP {
-						players[i].y -= speed
-						break
-					}
+			// Find the player associated with the input (if any).
+			found := false
+			for i := 0; i < len(players); i++ {
+				if players[i].ip == in.UserIP {
+					players[i].processInput(in)
+					found = true
+					break
 				}
-			case "Down":
-				for i := 0; i < len(players); i++ {
-					if in.UserIP == players[i].IP {
-						players[i].y += speed
-						break
-					}
-				}
-			case "Left":
-				for i := 0; i < len(players); i++ {
-					if in.UserIP == players[i].IP {
-						players[i].x -= speed
-						break
-					}
-				}
-			case "Right":
-				for i := 0; i < len(players); i++ {
-					if in.UserIP == players[i].IP {
-						players[i].x += speed
-						break
-					}
-				}
-			case "Start":
-				for _, p := range players {
-					if p.IP != in.UserIP {
-						players = append(players, newPlayer(in.UserIP))
-					}
-				}
+			}
+
+			// If no player was found, create a new one.
+			if !found && in.Key == "Start" {
+				players = append(players, newPlayer(in.UserIP))
 			}
 		}
 
-		//drawing
-		screen.FillRect(&screen.Clip_rect, 0)
-		for _, p := range players {
-			sdlBlit(ballImg, screen, p.x, p.y)
+		// Update the player positions.
+		for i := 0; i < len(players); i++ {
+			players[i].update()
 		}
-		screen.Flip()
+
+		// Clear the screen.
+		screenSurf.FillRect(&screenSurf.Clip_rect, 0)
+
+		// Redraw players.
+		for _, p := range players {
+			sdlBlit(p.surf, screenSurf, p.x, p.y)
+		}
+
+		// Update screen.
+		screenSurf.Flip()
 
 		//Clear inputs
 		inAgg.Clear()
 
-		//Check for sdl quit
+		//Check for SDL quit
 		for ev := sdl.PollEvent(); ev != nil; ev = sdl.PollEvent() {
 			if _, ok := ev.(*sdl.QuitEvent); ok {
 				os.Exit(0)
 			}
 		}
+
+		// Keep the framerate reasonable.
+		<-ticker.C
 	}
 }
