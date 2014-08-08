@@ -58,7 +58,6 @@ The second is a very rudimentary multiplayer SDL application using Gocontroller 
 					}
 				}
 			}
-			//Clear inputs
 			inAgg.Clear()
 		}
 	}	
