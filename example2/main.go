@@ -92,6 +92,11 @@ func (p *Player) processInput(in gocontroller.Input) {
 		} else if in.Event == gocontroller.RELEASE {
 			p.dX = 0
 		}
+	case "A":
+		if in.Event == gocontroller.PRESS {
+			p.x = rand.Intn(screenWidth)
+			p.y = rand.Intn(screenHeight)
+		}
 	}
 }
 
@@ -119,6 +124,7 @@ func main() {
 		{Left: 10, Top: 40, Key: "Left"},
 		{Left: 30, Top: 40, Key: "Right"},
 		{Left: 45, Top: 10, Key: "Start"},
+		{Left: 75, Top: 40, Key: "A", Color: "#872828"},
 	}}
 	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
 	server.Start()
