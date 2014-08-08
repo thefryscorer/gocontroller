@@ -41,14 +41,14 @@ var eventMap = map[string]event{
 	"RELEASE": RELEASE,
 }
 
-type input struct {
+type Input struct {
 	UserIP string
 	Key    string
 	Event  event
 }
 
 type server struct {
-	ch   chan input
+	ch   chan Input
 	Page Layout
 	Port string
 }
@@ -95,7 +95,7 @@ func (s *server) handleInput(req *http.Request) {
 			ev = eventMap[evString]
 		}
 
-		in := input{
+		in := Input{
 			UserIP: ipString,
 			Key:    foundBtn.Key,
 			Event:  ev,
@@ -113,7 +113,7 @@ func NewServer(layout Layout, port string) *server {
 }
 
 func (s *server) Start() {
-	s.ch = make(chan input)
+	s.ch = make(chan Input)
 	go func() {
 		http.HandleFunc("/", s.handleRequest)
 		err := http.ListenAndServe(s.Port, nil)
@@ -123,23 +123,23 @@ func (s *server) Start() {
 	}()
 }
 
-func (s *server) PollInput() input {
+func (s *server) PollInput() Input {
 	select {
 	case val := <-s.ch:
 		return val
 	default:
-		return input{Event: NONE}
+		return Input{Event: NONE}
 	}
 }
 
 type InputAggregator struct {
 	Server *server
-	Inputs []input
+	Inputs []Input
 }
 
 func (s *server) NewInputAggregator() InputAggregator {
 	return InputAggregator{
-		Inputs: make([]input, 0),
+		Inputs: make([]Input, 0),
 		Server: s,
 	}
 }
@@ -151,5 +151,5 @@ func (a *InputAggregator) Collect() {
 }
 
 func (a *InputAggregator) Clear() {
-	a.Inputs = make([]input, 0)
+	a.Inputs = make([]Input, 0)
 }
