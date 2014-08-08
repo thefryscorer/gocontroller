@@ -11,13 +11,16 @@ import (
 )
 
 var cmdPipe io.WriteCloser
+var currentkey string
 
 func keypress(key string) {
-	// We need to sleep a little here because some applications (anything that uses
-	// SDL for example) ignore any keypresses with a duration too low.
-	cmdPipe.Write([]byte(fmt.Sprintf("keydown %v\n", key)))
-	cmdPipe.Write([]byte("usleep 50000\n"))
-	cmdPipe.Write([]byte(fmt.Sprintf("keyup %v\n", key)))
+	currentkey = key
+	cmdPipe.Write([]byte(fmt.Sprintf("keydown %v\n", currentkey)))
+}
+
+func release() {
+	cmdPipe.Write([]byte(fmt.Sprintf("keyup %v\n", currentkey)))
+	currentkey = ""
 }
 
 func main() {
@@ -39,8 +42,10 @@ func main() {
 		{Left: 20, Top: 60, Key: "Down"},
 		{Left: 10, Top: 40, Key: "Left"},
 		{Left: 30, Top: 40, Key: "Right"},
-		{Left: 60, Top: 40, Key: "a", Color: "#204387"},
-		{Left: 80, Top: 40, Key: "b", Color: "#208743"},
+		{Left: 70, Top: 20, Key: "w", Color: "#f92672"},
+		{Left: 60, Top: 40, Key: "a", Color: "#82b414"},
+		{Left: 80, Top: 40, Key: "s", Color: "#56c2d6"},
+		{Left: 70, Top: 60, Key: "d", Color: "#8c54fe"},
 		{Left: 45, Top: 10, Key: "Return"},
 	}}
 	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
@@ -52,6 +57,8 @@ func main() {
 		for _, in := range inAgg.Inputs {
 			if in.Event == gocontroller.PRESS {
 				keypress(in.Key)
+			} else if in.Event == gocontroller.RELEASE {
+				release()
 			}
 		}
 
