@@ -15,37 +15,40 @@ Gocontroller is a library for using a web browser as a controller for games and 
 
 ### Simple custom gamepad
 
-    package main
-    
-    import (
-	    "fmt"
+	package main
+	
+	import (
+		"fmt"
 
-	    "github.com/thefryscorer/gocontroller"
-    )
+		"github.com/thefryscorer/gocontroller"
+	)
 
-    func main() {
-    	layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
-    		{Left: 30, Top: 50, Key: "On"},
-    		{Left: 70, Top: 50, Key: "Off"},
-    	}}
-    	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
-    	server.Start()
-    	fmt.Println("Server started.")
-    	inAgg := server.NewInputAggregator()
-    	for {
-    		inAgg.Collect()
-    		for _, in := range inAgg.Inputs {
-    			switch in.Key {
-    			case "On":
-    				fmt.Println("On was pressed")
-    			case "Off":
-    				fmt.Println("Off was pressed")
-    			}
-    		}
-    		//Clear inputs
-    		inAgg.Clear()
-    	}       
-    }
+	func main() {
+		layout := gocontroller.Layout{Style: gocontroller.DefaultCSS, Buttons: []gocontroller.Button{
+			{Left: 30, Top: 50, Key: "On"},
+			{Left: 70, Top: 50, Key: "Off"},
+		}}
+		server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
+		server.Start()
+		fmt.Println("Server started.")
+		inAgg := server.NewInputAggregator()
+		for {
+			inAgg.Collect()
+			for _, in := range inAgg.Inputs {
+				if in.Event == gocontroller.PRESS {
+					switch in.Key {
+					case "On":
+						fmt.Println("On was pressed")
+					case "Off":
+						fmt.Println("Off was pressed")
+					}
+				}
+			}
+			//Clear inputs
+			inAgg.Clear()
+		}
+	}	
+
 
 
 
