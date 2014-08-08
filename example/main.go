@@ -11,16 +11,13 @@ import (
 )
 
 var cmdPipe io.WriteCloser
-var currentkey string
 
 func keypress(key string) {
-	currentkey = key
-	cmdPipe.Write([]byte(fmt.Sprintf("keydown %v\n", currentkey)))
+	cmdPipe.Write([]byte(fmt.Sprintf("keydown %v\n", key)))
 }
 
-func release() {
-	cmdPipe.Write([]byte(fmt.Sprintf("keyup %v\n", currentkey)))
-	currentkey = ""
+func release(key string) {
+	cmdPipe.Write([]byte(fmt.Sprintf("keyup %v\n", key)))
 }
 
 func main() {
@@ -58,7 +55,7 @@ func main() {
 			if in.Event == gocontroller.PRESS {
 				keypress(in.Key)
 			} else if in.Event == gocontroller.RELEASE {
-				release()
+				release(in.Key)
 			}
 		}
 
