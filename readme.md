@@ -7,6 +7,8 @@ Gocontroller is a library for using a web browser as a controller for games and 
 - Controlling applications on the RaspberryPi
 - With custom gamepads it could be adapted to multiplayer simulation games
 
+[Video of an example program using Gocontroller](http://dbyron.id.au/static/files/videos/goctrl.mp4)
+
 ##Installation
 
     #go get github.com/thefryscorer/gocontroller
