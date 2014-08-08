@@ -39,8 +39,8 @@ func main() {
 		{Left: 20, Top: 60, Key: "Down"},
 		{Left: 10, Top: 40, Key: "Left"},
 		{Left: 30, Top: 40, Key: "Right"},
-		{Left: 60, Top: 40, Key: "a", Color:"#204387"},
-		{Left: 80, Top: 40, Key: "b", Color:"#208743"},
+		{Left: 60, Top: 40, Key: "a", Color: "#204387"},
+		{Left: 80, Top: 40, Key: "b", Color: "#208743"},
 		{Left: 45, Top: 10, Key: "Return"},
 	}}
 	server := gocontroller.NewServer(layout, gocontroller.DefaultPort)
@@ -50,7 +50,9 @@ func main() {
 	for {
 		inAgg.Collect()
 		for _, in := range inAgg.Inputs {
-			keypress(in.Key)
+			if in.Event == gocontroller.PRESS {
+				keypress(in.Key)
+			}
 		}
 
 		//Clear inputs
