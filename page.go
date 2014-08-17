@@ -65,7 +65,7 @@ body {
 `
 
 const buttonTemplate string = `
-<button class="button" type="button" style="left:%v%%;top:%v%%;%v" onmousedown="httpGet('button%[4]vtypePRESS')" onmouseup="httpGet('button%[4]vtypeRELEASE')" ontouchstart="httpGet('button%[4]vtypePRESS')" ontouchend="httpGet('button%[4]vtypeRELEASE')" ontouchcancel="httpGet('button%[4]vtypeRELEASE')" >%v</button>
+<button class="button" type="button" style="left:%v%%;top:%v%%;%v" onmousedown="httpGet('button%[4]vtypePRESS')" onmouseup="httpGet('button%[4]vtypeRELEASE')">%v</button>
 `
 
 type Layout struct {
