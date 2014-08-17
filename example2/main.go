@@ -93,7 +93,7 @@ func (p *Player) processInput(in gocontroller.Input) {
 			p.dX = 0
 		}
 	case "A":
-		if in.Event == gocontroller.PRESS {
+		if in.Event == gocontroller.RELEASE {
 			p.surf = makeBall(16, color.NRGBA{R: uint8(rand.Intn(255)), G: uint8(rand.Intn(255)), B: uint8(rand.Intn(255)), A: 255})
 		}
 	}
