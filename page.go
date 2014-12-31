@@ -35,19 +35,10 @@ const layoutFoot string = `
 
 const DefaultCSS string = `
 body {
-	background:
-	radial-gradient(#151515 5px, transparent 5px) 0px 0px, 
-	radial-gradient(#222 5px, transparent 5px) 0px 23px,
-	radial-gradient(#222 5px, transparent 5px) 25px 0px,
-	radial-gradient(#1b1b1b 10px, transparent 10px),
-	radial-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 5%, #242424);
-	background-size: 30px 30px;
-	background-color: #131313;
+	background-color: #FFFFFF;
 }
 .button {
 	background-color:#2c2c2c;
-	border-radius: 42px;
-	text-indent:0;
 	display:block;
 	position:absolute;
 	color:#ffffff;
@@ -55,12 +46,8 @@ body {
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	height:15%;
-	line-height:15%;
-	width:10%;
-	text-decoration:none;
+	line-height: 1.5em;
 	text-align:center;
-	outline:none;
 }
 `
 
