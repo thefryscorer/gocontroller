@@ -50,7 +50,7 @@ type Input struct {
 	Event  event
 }
 
-type server struct {
+type Server struct {
 	ch   chan Input
 	Page Layout
 	Port string
@@ -58,7 +58,7 @@ type server struct {
 
 const DefaultPort = ":12345"
 
-func (s *server) handleRequest(w http.ResponseWriter, req *http.Request) {
+func (s *Server) handleRequest(w http.ResponseWriter, req *http.Request) {
 	if req.RequestURI == "/" {
 		io.WriteString(w, s.Page.String())
 	} else {
@@ -67,7 +67,7 @@ func (s *server) handleRequest(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func (s *server) handleInput(req *http.Request) {
+func (s *Server) handleInput(req *http.Request) {
 	if strings.Contains(req.RequestURI, "/button") {
 		inputString := strings.Replace(req.RequestURI, "/button", "", 1)
 		ipString := strings.Split(req.RemoteAddr, ":")[0]
@@ -108,14 +108,14 @@ func (s *server) handleInput(req *http.Request) {
 	}
 }
 
-func NewServer(layout Layout, port string) *server {
-	return &server{
+func NewServer(layout Layout, port string) *Server {
+	return &Server{
 		Port: port,
 		Page: layout,
 	}
 }
 
-func (s *server) Start() {
+func (s *Server) Start() {
 	s.ch = make(chan Input)
 	go func() {
 		http.HandleFunc("/", s.handleRequest)
@@ -126,7 +126,7 @@ func (s *server) Start() {
 	}()
 }
 
-func (s *server) PollInput() Input {
+func (s *Server) PollInput() Input {
 	select {
 	case val := <-s.ch:
 		return val
@@ -136,11 +136,11 @@ func (s *server) PollInput() Input {
 }
 
 type InputAggregator struct {
-	Server *server
+	Server *Server
 	Inputs []Input
 }
 
-func (s *server) NewInputAggregator() InputAggregator {
+func (s *Server) NewInputAggregator() InputAggregator {
 	return InputAggregator{
 		Inputs: make([]Input, 0),
 		Server: s,

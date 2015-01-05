@@ -46,13 +46,13 @@ body {
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
-	line-height: 1.5em;
+	line-height: 2em;
 	text-align:center;
 }
 `
 
 const buttonTemplate string = `
-<button class="button" type="button" style="left:%v%%;top:%v%%;%v" onmousedown="httpGet('button%[4]vtypePRESS')" onmouseup="httpGet('button%[4]vtypeRELEASE')">%v</button>
+<button class="button" type="button" style="left:%v%%;top:%v%%;%v" ontouchstart="httpGet('button%[4]vtypePRESS')" ontouchend="httpGet('button%[4]vtypeRELEASE')">%v</button>
 `
 
 type Layout struct {
